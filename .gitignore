@@ -1,0 +1,19 @@
+# Ignorar node_modules em ambos os diretórios
+/BACKEND/node_modules
+/FRONTEND/node_modules
+
+# Ignorar a pasta android em ambos os diretórios
+/FRONTEND/android
+/FRONTEND/package-lock.json
+
+# Ignorar arquivos específicos do BACKEND
+/BACKEND/.vscode
+/BACKEND/.editorconfig
+/BACKEND/yarn.lock
+/BACKEND/eslint.config.js
+
+# Ignorar a pasta .expo (usada pelo Expo no React Native)
+/FRONTEND/.expo
+
+# Ignorar arquivos do VS Code em geral
+.vscode
