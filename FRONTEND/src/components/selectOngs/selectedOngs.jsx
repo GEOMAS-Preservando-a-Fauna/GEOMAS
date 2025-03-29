@@ -8,19 +8,17 @@ import {
   Modal,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
-import { CORES } from "../../constants/tema";
+import { CORES, LETRAS } from "../../constants/tema";
 
-function EspeciesCheckbox({ especies, selectedEspecies, setSelectedEspecies }) {
+function CheckboxOngs({ ongs, selectedOngs, setSelectedOngs }) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const toggleEspecie = (especie) => {
-    const isSelected = selectedEspecies.some((item) => item.id === especie.id);
+  const toggleOng = (ong) => {
+    const isSelected = selectedOngs.some((item) => item.id === ong.id);
     if (isSelected) {
-      setSelectedEspecies(
-        selectedEspecies.filter((item) => item.id !== especie.id)
-      );
+      setSelectedOngs(selectedOngs.filter((item) => item.id !== ong.id));
     } else {
-      setSelectedEspecies([...selectedEspecies, especie]);
+      setSelectedOngs([...selectedOngs, ong]);
     }
   };
 
@@ -30,7 +28,7 @@ function EspeciesCheckbox({ especies, selectedEspecies, setSelectedEspecies }) {
         onPress={() => setModalVisible(true)}
         style={styles.openButton}
       >
-        <Text style={styles.openButtonText}>Selecionar Espécies</Text>
+        <Text style={styles.openButtonText}>Selecionar ONGs</Text>
       </TouchableOpacity>
 
       <Modal
@@ -41,22 +39,23 @@ function EspeciesCheckbox({ especies, selectedEspecies, setSelectedEspecies }) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.title}>SELECIONE AS ESPÉCIES</Text>
+            <Text style={styles.title}>SELECIONE AS ONGs</Text>
 
             <ScrollView style={styles.scrollView}>
-              {especies.map((especie) => (
+              {ongs.map((ong) => (
                 <TouchableOpacity
-                  key={especie.id}
-                  onPress={() => toggleEspecie(especie)}
+                  key={ong.id}
+                  onPress={() => toggleOng(ong)}
                   style={styles.option}
                 >
                   <CheckBox
-                    checked={selectedEspecies.some(
-                      (item) => item.id === especie.id
-                    )}
-                    onPress={() => toggleEspecie(especie)}
+                    size={LETRAS.xl}
+                    checked={selectedOngs.some((item) => item.id === ong.id)}
+                    onPress={() => toggleOng(ong)}
                   />
-                  <Text style={styles.optionText}>{especie.name}</Text>
+                  <Text style={styles.optionText}>
+                    {ong.name.toUpperCase()}
+                  </Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
   },
   openButtonText: {
     color: "#FFF",
-    fontSize: 16,
+    fontSize: LETRAS.md,
     fontWeight: "bold",
   },
   modalContainer: {
@@ -93,26 +92,27 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: "80%",
+    width: "90%",
     backgroundColor: "#FFF",
     borderRadius: 10,
-    padding: 20,
+    padding: 10,
     maxHeight: "80%",
   },
   title: {
-    fontSize: 16,
+    fontSize: LETRAS.lg,
     color: "#256c42",
     textAlign: "center",
   },
   scrollView: {
-    maxHeight: 160,
+    maxHeight: 180,
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
   },
   optionText: {
-    fontSize: 16,
+    fontSize: LETRAS.sm,
+    width: "80%",
   },
   closeButton: {
     marginTop: 10,
@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     color: "#FFF",
-    fontSize: 16,
+    fontSize: LETRAS.lg,
     fontWeight: "bold",
   },
 });
 
-export default EspeciesCheckbox;
+export default CheckboxOngs;

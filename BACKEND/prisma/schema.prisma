@@ -63,9 +63,18 @@ model Ongs {
     cidadeId     Int
     cidade       Cidade      @relation(fields: [cidadeId], references: [id])
     especies     OngAnimal[]
-    reports      Report[]    @relation("OngToReport")
+    reports      OngReport[]
     created_at   DateTime    @default(now())
     updated_at   DateTime    @updatedAt
+}
+
+model OngReport {
+    ongId    Int
+    reportId Int
+    ong      Ongs   @relation(fields: [ongId], references: [id], onDelete: Cascade)
+    report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+    @@id([ongId, reportId])
 }
 
 // Modelo de Denúncia (Report)
@@ -80,8 +89,7 @@ model Report {
     especie    ClasseAnimal? @relation(fields: [especie_id], references: [id])
     animal_id  Int?
     animal     Animal?       @relation(fields: [animal_id], references: [id])
-    ong_id     Int // Chave estrangeira para a ONG
-    ong        Ongs          @relation("OngToReport", fields: [ong_id], references: [id])
+    ongs       OngReport[]
     user_id    Int
     user       User          @relation(fields: [user_id], references: [id])
     created_at DateTime      @default(now())

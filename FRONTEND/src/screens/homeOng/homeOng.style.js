@@ -6,16 +6,16 @@ const styles = {
     paddingHorizontal: 5,
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 5,
   },
   line: {
-    width: "90%",
+    width: "95%",
     height: 2,
-    backgroundColor: CORES.verdeClaro,
+    backgroundColor: "#CCC",
   },
   titulo: {
     color: CORES.verdeEscuro,
-    fontSize: LETRAS.xl,
+    fontSize: LETRAS.xxl,
     fontWeight: "600",
   },
   card: {
@@ -24,29 +24,16 @@ const styles = {
     padding: 10,
     borderWidth: 2,
     borderColor: CORES.verdeClaro,
-    marginTop: 10,
+    marginVertical: 10,
     alignItems: "center",
     borderRadius: 10,
-  },
-  image: {
-    borderRadius: 50,
-    width: 50,
-    height: 50,
   },
   name: {
     width: "95%",
     textAlign: "left",
-    color: CORES.verdeEscuro,
+    color: "#C40C0C",
     fontWeight: "800",
     fontSize: LETRAS.md,
-  },
-  contato: {
-    padding: 3,
-    width: "80%",
-    textAlign: "center",
-    color: "blue",
-    fontWeight: "600",
-    fontSize: LETRAS.sm,
   },
   t: {
     width: "90%",
@@ -72,12 +59,18 @@ const styles = {
   pendente: {
     width: "80%",
     textAlign: "center",
-    color: CORES.verdeMedio,
-    fontWeight: "600",
+    color: "#C40C0C",
+    fontWeight: "700",
     fontSize: LETRAS.lg,
     borderWidth: 2,
     borderColor: CORES.verdeMedio,
     borderRadius: 5,
+  },
+  text2: {
+    width: "90%",
+    color: CORES.verdeClaro,
+    fontWeight: "700",
+    fontSize: LETRAS.md,
   },
 };
 

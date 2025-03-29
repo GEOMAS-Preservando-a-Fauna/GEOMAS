@@ -16,8 +16,12 @@ router.post("/sessions", Sessions.create);
 router.post("/users", Users.create);
 router.post("/ongs", Ongs.create);
 router.post("/logout", (req, res) => {
-    res.status(200).json({ message: "Logout realizado com sucesso." });
+  res.status(200).json({ message: "Logout realizado com sucesso." });
 });
+router.get("/estados", Estados.list);
+router.get("/cidade/estado/:id", Cidade.list);
+router.get("/animais/especie/:especieId", Animal.listByEspecie);
+router.get("/especies", Especies.list);
 
 // Middleware de autenticação (todas as rotas abaixo exigem autenticação)
 router.use(auth);
@@ -38,25 +42,22 @@ router.delete("/ongs/:id", Ongs.destroy);
 
 // Rotas de Espécies
 router.post("/especies", Especies.create);
-router.get("/especies", Especies.list);
 
 // Rotas de Animais
 router.post("/animais", Animal.create);
 router.get("/animais", Animal.list);
-router.get("/animais/especie/:especieId", Animal.listByEspecie);
 
 // Rotas de Estados
 router.post("/estados", Estados.create);
-router.get("/estados", Estados.list);
 
 // Rotas de Cidades
 router.post("/cidades", Cidade.create);
-router.get("/cidade/estado/:id", Cidade.list);
 
 // Rotas de Denúncias (Reports)
 router.post("/reports", Reports.create);
 router.get("/reports", Reports.list);
 router.get("/reports/:id", Reports.show);
+router.put("/reports/:id", Reports.update);
 router.delete("/reports/:id", Reports.destroy);
 
 router.get("/reports/ongs/:ongid", Reports.list);

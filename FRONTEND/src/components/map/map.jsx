@@ -73,10 +73,10 @@ function Mapa({ setLocalizacao, newEndereco, btn, reports }) {
       );
       enderecoSelecionado.then((endereco) => {
         setEndereco(endereco);
-        Alert.alert(
-          "Local selecionado de Denúncia:",
-          `Coordenadas: Latitude ${local.latitude}, Longitude ${local.longitude}\nEndereço: ${endereco}`
-        );
+        // Alert.alert(
+        //   "Local selecionado de Denúncia:",
+        //   `Coordenadas: Latitude ${local.latitude}, Longitude ${local.longitude}\nEndereço: ${endereco}`
+        // );
       });
       setLocalizacao(regiao);
       newEndereco(endereco);
@@ -143,7 +143,6 @@ export default Mapa;
 
 const styles = StyleSheet.create({
   caixa: {
-    marginVertical: 10,
     padding: 10,
     borderWidth: 1,
     borderColor: "#CCC",

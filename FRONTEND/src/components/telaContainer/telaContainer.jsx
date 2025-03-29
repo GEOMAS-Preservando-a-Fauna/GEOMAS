@@ -7,8 +7,8 @@ function TelaContainer(props) {
       style={{
         flex: 1,
         backgroundColor: props.backgroundColor,
-        alignContent: "center",
-        justifyContent: "center",
+        // alignContent: "center",
+        // justifyContent: "center",
       }}
     >
       <StatusBar

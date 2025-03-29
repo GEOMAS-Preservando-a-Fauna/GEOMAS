@@ -9,6 +9,7 @@ import API from "../../service/apiAxios.js";
 import { getUserData, getUserType } from "../../service/getStorage.js";
 import { useNavigation } from "@react-navigation/native";
 import Mapa from "../../components/map/map.jsx";
+import CheckboxOngs from "../../components/selectOngs/selectedOngs.jsx";
 
 export default function Denuncia() {
   const [especies, setEspecies] = useState([]);
@@ -19,7 +20,7 @@ export default function Denuncia() {
   const [type, setType] = useState();
   const [selectedEspecie, setSelectedEspecie] = useState();
   const [selectedAnimal, setSelectedAnimal] = useState();
-  const [selectedOng, setSelectedOng] = useState();
+  const [selectedOng, setSelectedOng] = useState([]);
   const [user, setUser] = useState();
 
   const navigation = useNavigation();
@@ -92,7 +93,7 @@ export default function Denuncia() {
         reportType: type.name,
         especie_id: selectedEspecie.id,
         animal_id: selectedAnimal.id,
-        ong_id: selectedOng.id,
+        ong_id: selectedOng.map((item) => item.id),
         user_id: user.id,
       });
 
@@ -130,7 +131,7 @@ export default function Denuncia() {
   return (
     <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
       <ScrollView>
-        <ButtonBackPage Page="home" text="denúncia" />
+        <ButtonBackPage Page="home" text="denúncias" />
         <View style={styles.container}>
           <Mapa
             setLocalizacao={setLocal}
@@ -154,11 +155,13 @@ export default function Denuncia() {
               setSelected={setSelectedAnimal}
             />
           )}
-          <SelectItem
-            data={ongs}
-            title="SELECIONE A INSTITUIÇÃO"
-            setSelected={setSelectedOng}
-          />
+          <View style={styles.box}>
+            <CheckboxOngs
+              ongs={ongs}
+              selectedOngs={selectedOng}
+              setSelectedOngs={setSelectedOng}
+            />
+          </View>
           <BtnIntro
             texto="ENVIAR"
             backgroundColor="#006400"
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     padding: 10,
-    marginTop: 50,
+    marginTop: "15%",
     alignItems: "center",
   },
   box: {
@@ -193,3 +196,9 @@ const styles = StyleSheet.create({
     color: CORES.verdeEscuro,
   },
 });
+
+/* <SelectItem
+            data={ongs}
+            title="SELECIONE A INSTITUIÇÃO"
+            setSelected={setSelectedOng}
+          /> */

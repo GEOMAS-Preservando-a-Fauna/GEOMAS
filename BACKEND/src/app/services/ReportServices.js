@@ -31,12 +31,12 @@ class ReportServices {
       reportType,
       especie_id,
       animal_id,
-      ong_id,
+      ong_id = [],
       user_id,
     } = data;
 
     try {
-      const report = await prisma.report.create({
+      const reports = await prisma.report.create({
         data: {
           latitude,
           longitude,
@@ -45,20 +45,19 @@ class ReportServices {
           especie_id,
           animal_id,
           user_id,
-          ong_id,
+          ongs: {
+            create: ong_id.map((ongId) => ({
+              ong: { connect: { id: ongId } },
+            })),
+          },
         },
-        include: {
-          especie: true,
-          animal: true,
-          ong: true,
-          user: true,
-        },
+        include: { ongs: true, user: true },
       });
 
-      return report;
+      return reports;
     } catch (error) {
-      console.error("Erro ao criar denúncia no backend:", error);
-      throw new Error(`Erro ao criar denúncia: ${error.message}`);
+      console.error("Erro ao criar denúncia:", error);
+      throw new Error(`Falha na criação: ${error.message}`);
     }
   }
 
@@ -76,15 +75,38 @@ class ReportServices {
     try {
       const reportsOng = await prisma.report.findMany({
         where: {
-          ong_id: ongid,
+          ongs: {
+            some: {
+              ongId: ongid,
+            },
+          },
           status: false,
         },
+        orderBy: { created_at: "desc" },
       });
 
       return reportsOng;
     } catch (error) {
       console.error("❌ Falha ao listar os reports:", error);
       throw new Error(`⚠️ Falha ao listar os reports: ${error.message}`);
+    }
+  }
+
+  async updateReport(id, status) {
+    try {
+      const reportExist = await prisma.report.findUnique({ where: { id } });
+      if (!reportExist) {
+        throw new Error("Denúncia não encontrada.");
+      }
+
+      const reportStatus = await prisma.report.update({
+        where: { id },
+        data: { status },
+      });
+
+      return reportStatus;
+    } catch (error) {
+      throw new Error(`Erro ao alterar status da denúncia: ${error.message}`);
     }
   }
 

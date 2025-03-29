@@ -23,7 +23,7 @@ export default function HomeOng() {
         setOng(response.data);
       }
     } catch (error) {
-      console.error("Erro ao obter dados da ONG:", error);
+      console.log("Erro ao obter dados da ONG:", error);
     }
   };
 
@@ -32,7 +32,7 @@ export default function HomeOng() {
       const response = await API.get(`/reports/ongs/${ong.id}`);
       setReports(response.data);
     } catch (error) {
-      console.error("Erro ao buscar reports:", error);
+      console.log("Erro ao buscar reports");
     }
   };
 
@@ -48,11 +48,11 @@ export default function HomeOng() {
   }, [ong]);
 
   return (
-    <TelaContainer barStyle="light-content" backgroundColor={"#FFFFFF"}>
+    <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
       <Header />
       <View style={styles.container}>
         <Mapa reports={reports} />
-        <Text style={styles.titulo}>Todas as Denúncias</Text>
+        <Text style={styles.titulo}>Denúncias</Text>
         <View style={styles.line} />
 
         <ScrollView contentContainerStyle={{ alignItems: "center" }}>
@@ -63,20 +63,35 @@ export default function HomeOng() {
                 style={[styles.card, { alignItems: "center" }]}
               >
                 <View style={styles.box}>
-                  <Text style={styles.name}>Denúncia #{i + 1}</Text>
+                  <Text style={styles.name}>#{i + 1} Denúncia </Text>
                   <Text style={styles.t}>
                     {new Date(report.created_at).toLocaleDateString()}
                   </Text>
                 </View>
-                <Text style={styles.textC}>{report.reportType}</Text>
-                <Text style={styles.textC}>{report.endereco}</Text>
+                <Text style={styles.textC}>
+                  <Text style={styles.text2}>Tipo de Risco: {""}</Text>
+                  {report.reportType}
+                </Text>
+                <Text style={styles.textC}>
+                  <Text style={styles.text2}>Endereço: {""}</Text>
+                  {report.endereco}
+                </Text>
                 <Text style={styles.pendente}>
                   {report.status === false ? "Pendente" : "Atendida"}
                 </Text>
               </View>
             ))
           ) : (
-            <Text style={styles.text}>Nenhuma denúncia encontrada</Text>
+            <Text
+              style={{
+                fontSize: 15,
+                marginBottom: 10,
+                fontWeight: "700",
+                color: "#8FBC8F",
+              }}
+            >
+              Nenhuma denúncia encontrada!
+            </Text>
           )}
         </ScrollView>
 
@@ -84,12 +99,12 @@ export default function HomeOng() {
           style={{
             zIndex: 100,
             position: "absolute",
-            bottom: 30,
-            right: 10,
+            bottom: 15,
+            right: 5,
           }}
           onPress={() => navigation.navigate("notification")}
         >
-          <Ionicons name="notifications" size={50} color="red" />
+          <Ionicons name="notifications" size={50} color="#C40C0C" />
         </TouchableOpacity>
       </View>
     </TelaContainer>

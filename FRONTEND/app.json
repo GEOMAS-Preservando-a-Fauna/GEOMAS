@@ -9,7 +9,7 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -21,9 +21,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.GEOMASPreservandoFauna"
-    },
-    "web": {
-      "favicon": "./assets/favicon.jpg"
     }
   }
 }
