@@ -1,0 +1,119 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// Modelo de Usuário
+model User {
+    id         Int      @id @default(autoincrement())
+    email      String   @unique
+    password   String
+    reports    Report[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+// Modelo de Espécie
+model ClasseAnimal {
+    id         Int         @id @default(autoincrement())
+    name       String      @unique @db.VarChar(100)
+    animais    Animal[]
+    ongs       OngAnimal[]
+    reports    Report[]
+    created_at DateTime    @default(now())
+    updated_at DateTime    @updatedAt
+}
+
+// Modelo de Animal
+model Animal {
+    id             Int          @id @default(autoincrement())
+    name           String       @db.VarChar(100)
+    scientificName String       @db.VarChar(100)
+    especie_id     Int
+    especie        ClasseAnimal @relation(fields: [especie_id], references: [id])
+    reports        Report[]
+    created_at     DateTime     @default(now())
+    updated_at     DateTime     @updatedAt
+}
+
+// Tabela intermediária para o relacionamento N:N entre Ongs e Animais
+model OngAnimal {
+    ongId     Int
+    especieId Int
+    ong       Ongs         @relation(fields: [ongId], references: [id], onDelete: Cascade)
+    especie   ClasseAnimal @relation(fields: [especieId], references: [id], onDelete: Cascade)
+
+    @@id([ongId, especieId]) // Chave primária composta
+}
+
+// Modelo de ONG
+model Ongs {
+    id           Int         @id @default(autoincrement())
+    name         String      @db.VarChar(100)
+    sigla        String?     @db.VarChar(100)
+    email        String      @unique @db.VarChar(100)
+    password     String
+    description  String?
+    number       String
+    numberSecond String?
+    cidadeId     Int
+    cidade       Cidade      @relation(fields: [cidadeId], references: [id])
+    especies     OngAnimal[]
+    reports      OngReport[]
+    created_at   DateTime    @default(now())
+    updated_at   DateTime    @updatedAt
+}
+
+model OngReport {
+    ongId    Int
+    reportId Int
+    ong      Ongs   @relation(fields: [ongId], references: [id], onDelete: Cascade)
+    report   Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+    @@id([ongId, reportId])
+}
+
+// Modelo de Denúncia (Report)
+model Report {
+    id         Int           @id @default(autoincrement())
+    status     Boolean       @default(false)
+    latitude   Float
+    longitude  Float
+    endereco   String
+    reportType String
+    especie_id Int?
+    especie    ClasseAnimal? @relation(fields: [especie_id], references: [id])
+    animal_id  Int?
+    animal     Animal?       @relation(fields: [animal_id], references: [id])
+    ongs       OngReport[]
+    user_id    Int
+    user       User          @relation(fields: [user_id], references: [id])
+    created_at DateTime      @default(now())
+    updated_at DateTime      @updatedAt
+}
+
+// Modelo de Cidade
+model Cidade {
+    id         Int      @id @default(autoincrement())
+    name       String   @db.VarChar(100)
+    estado_id  Int
+    estado     Estado   @relation(fields: [estado_id], references: [id])
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    Ongs       Ongs[]
+}
+
+// Modelo de Estado
+
+model Estado {
+    id         Int      @id @default(autoincrement())
+    name       String
+    sigla      String   @unique @db.VarChar(2)
+    cidades    Cidade[]
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
