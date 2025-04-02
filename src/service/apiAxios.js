@@ -2,10 +2,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API = axios.create({
-  // etec
-  // baseURL: "http://192.168.15.141:3000",
-  // casa
-  baseURL: "http://192.168.1.4:3000",
+  //endereço da api
+  baseURL: "https://geomas.onrender.com",
 });
 
 API.interceptors.request.use(
