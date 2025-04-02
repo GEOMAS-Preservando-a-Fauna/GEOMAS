@@ -39,15 +39,6 @@ export default function Denuncia() {
     }
   };
 
-  const getOngs = async () => {
-    try {
-      const response = await API.get("/ongs");
-      setOngs(response.data);
-    } catch (error) {
-      console.error("Erro ao listar ONGs:", error);
-    }
-  };
-
   const getEspecies = async () => {
     try {
       const response = await API.get("/especies");
@@ -68,6 +59,16 @@ export default function Denuncia() {
     }
   };
 
+  const getOngsByEspecies = async (especieId) => {
+    try {
+      const response = await API.get(`/especies/ongs/${especieId}`);
+      console.log("ONGs encontradas:", response.data);
+      setOngs(response.data);
+    } catch (error) {
+      console.error("Erro ao listar ONGs:", error);
+    }
+  };
+
   const setDenuncia = async () => {
     try {
       if (!local || !endereco) {
@@ -76,7 +77,7 @@ export default function Denuncia() {
       if (!type) {
         throw new Error("Tipo de risco é obrigatório!");
       }
-      if (!selectedOng) {
+      if (!selectedOng.length) {
         throw new Error("Selecionar uma ONG é obrigatório!");
       }
       if (!selectedEspecie) {
@@ -119,12 +120,12 @@ export default function Denuncia() {
   useEffect(() => {
     if (selectedEspecie?.id) {
       getAnimaisPorEspecie(selectedEspecie.id);
+      getOngsByEspecies(selectedEspecie.id);
     }
   }, [selectedEspecie]);
 
   useEffect(() => {
     getEspecies();
-    getOngs();
     getUserId();
   }, []);
 
@@ -155,13 +156,16 @@ export default function Denuncia() {
               setSelected={setSelectedAnimal}
             />
           )}
-          <View style={styles.box}>
-            <CheckboxOngs
-              ongs={ongs}
-              selectedOngs={selectedOng}
-              setSelectedOngs={setSelectedOng}
-            />
-          </View>
+          {selectedEspecie?.id && (
+            <View style={styles.box}>
+              <CheckboxOngs
+                ongs={ongs.map((item) => item.ong)}
+                selectedOngs={selectedOng}
+                setSelectedOngs={setSelectedOng}
+              />
+            </View>
+          )}
+
           <BtnIntro
             texto="ENVIAR"
             backgroundColor="#006400"
@@ -196,9 +200,3 @@ const styles = StyleSheet.create({
     color: CORES.verdeEscuro,
   },
 });
-
-/* <SelectItem
-            data={ongs}
-            title="SELECIONE A INSTITUIÇÃO"
-            setSelected={setSelectedOng}
-          /> */

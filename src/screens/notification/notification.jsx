@@ -5,17 +5,18 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import TelaContainer from "../../components/telaContainer/telaContainer";
-import { useNavigation } from "@react-navigation/native";
 import API from "../../service/apiAxios.js";
 import { getUserType, getUserData } from "../../service/getStorage.js";
 import styles from "./notification.style.js";
 import ButtonBackPage from "../../components/buttonBackPage/buttonBackPage.jsx";
 
 export default function Notification() {
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+
   const [ong, setOng] = useState(null);
   const [reports, setReports] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -70,6 +71,8 @@ export default function Notification() {
       }
     } catch (error) {
       console.log("Erro ao atualizar o status do report:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -88,7 +91,12 @@ export default function Notification() {
       <ButtonBackPage Page="homeOng" text="denúncia" />
       <View style={styles.container}>
         <View style={[styles.line, { marginTop: 15 }]} />
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={getReports} />
+          }
+        >
           {reports.length > 0 ? (
             reports.map((report, i) => (
               <View

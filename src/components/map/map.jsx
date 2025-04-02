@@ -58,43 +58,28 @@ function Mapa({ setLocalizacao, newEndereco, btn, reports }) {
     return "Endereço não encontrado";
   };
 
-  const selecionarLocal = () => {
-    if (local) {
-      setRegiao({
-        latitude: local.latitude,
-        longitude: local.longitude,
-      });
-      setIsLocal(true);
-
-      // Obter o endereço
-      const enderecoSelecionado = obterEndereco(
-        local.latitude,
-        local.longitude
+  const selecionarLocal = async () => {
+    if (regiao) {
+      const enderecoSelecionado = await obterEndereco(
+        regiao.latitude,
+        regiao.longitude
       );
-      enderecoSelecionado.then((endereco) => {
-        setEndereco(endereco);
-        // Alert.alert(
-        //   "Local selecionado de Denúncia:",
-        //   `Coordenadas: Latitude ${local.latitude}, Longitude ${local.longitude}\nEndereço: ${endereco}`
-        // );
-      });
+      setEndereco(enderecoSelecionado);
       setLocalizacao(regiao);
-      newEndereco(endereco);
-      console.log("Local selecionado:", regiao);
+      newEndereco(enderecoSelecionado);
+      return Alert.alert("Sucesso!", `Endereço: ${enderecoSelecionado}`);
     } else {
-      console.log("Local ainda não carregado.");
+      console.log("Nenhuma região selecionada.");
     }
   };
 
-  // Função para selecionar um local no mapa
   const selecionarLocalNoMapa = async (evento) => {
     const { latitude, longitude } = evento.nativeEvent.coordinate;
-    setRegiao({ latitude, longitude });
-    setIsLocal(true);
-
-    // Obter o endereço da localização selecionada
     const enderecoSelecionado = await obterEndereco(latitude, longitude);
+
+    setRegiao({ latitude, longitude });
     setEndereco(enderecoSelecionado);
+    setIsLocal(true);
   };
 
   return (
@@ -129,7 +114,7 @@ function Mapa({ setLocalizacao, newEndereco, btn, reports }) {
       </View>
       {btn && (
         <TouchableOpacity
-          onPress={selecionarLocal}
+          onPress={() => selecionarLocal()}
           style={[styles.botao, { backgroundColor: "#8FBC8F" }]}
         >
           <Text style={styles.texto}>SELECIONAR</Text>

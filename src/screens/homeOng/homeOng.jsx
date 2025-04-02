@@ -1,5 +1,11 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import TelaContainer from "../../components/telaContainer/telaContainer";
 import styles from "./homeOng.style.js";
 import Header from "../../components/header/header";
@@ -11,40 +17,45 @@ import { getUserType, getUserData } from "../../service/getStorage.js";
 
 export default function HomeOng() {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const [ong, setOng] = useState(null);
   const [reports, setReports] = useState([]);
 
-  const getOngs = async () => {
-    try {
-      const userType = await getUserType();
-      const userData = await getUserData();
-      if (userType === "ong") {
-        const response = await API.get(`/ongs/email/${userData.email}`);
-        setOng(response.data);
+  useEffect(() => {
+    const fetchOng = async () => {
+      try {
+        const userType = await getUserType();
+        const userData = await getUserData();
+        if (userType === "ong") {
+          const response = await API.get(`/ongs/email/${userData.email}`);
+          setOng(response.data);
+        }
+      } catch (error) {
+        console.log("Erro ao obter dados da ONG:", error);
       }
-    } catch (error) {
-      console.log("Erro ao obter dados da ONG:", error);
-    }
-  };
+    };
 
-  const getReports = async () => {
+    fetchOng();
+  }, []);
+
+  useEffect(() => {
+    if (ong) {
+      getReports();
+    }
+  }, [ong]);
+
+  // Função para buscar reports
+  const getReports = useCallback(async () => {
+    if (!ong) return;
+    setRefreshing(true);
     try {
       const response = await API.get(`/reports/ongs/${ong.id}`);
       setReports(response.data);
     } catch (error) {
       console.log("Erro ao buscar reports");
+    } finally {
+      setRefreshing(false);
     }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await getOngs();
-      if (ong) {
-        await getReports();
-      }
-    };
-
-    fetchData();
   }, [ong]);
 
   return (
@@ -55,7 +66,12 @@ export default function HomeOng() {
         <Text style={styles.titulo}>Denúncias</Text>
         <View style={styles.line} />
 
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={getReports} />
+          }
+        >
           {reports.length > 0 ? (
             reports.map((report, i) => (
               <View

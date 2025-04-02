@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import TelaContainer from "../../components/telaContainer/telaContainer";
 import styles from "./home.style";
 import Header from "../../components/header/header";
@@ -12,6 +19,7 @@ import Imagens from "../../constants/imagens";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
   const [ongs, setOngs] = useState([]);
 
   const getOngs = async () => {
@@ -20,6 +28,8 @@ export default function Home() {
       setOngs(response.data);
     } catch (error) {
       console.error("Erro ao listar ONGs:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -42,7 +52,12 @@ export default function Home() {
         <View style={styles.line} />
         <Text style={styles.titulo}>LISTA DE ONGS</Text>
 
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={getOngs} />
+          }
+        >
           {ongs.map((item) => (
             <View key={item.id} style={[styles.card, { alignItems: "center" }]}>
               <Text style={styles.name}>{item.name.toUpperCase()}</Text>
