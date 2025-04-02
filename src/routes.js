@@ -42,6 +42,7 @@ router.delete("/ongs/:id", Ongs.destroy);
 
 // Rotas de Espécies
 router.post("/especies", Especies.create);
+router.get("/especies/ongs/:id", Especies.list);
 
 // Rotas de Animais
 router.post("/animais", Animal.create);

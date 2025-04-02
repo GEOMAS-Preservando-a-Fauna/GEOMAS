@@ -20,6 +20,8 @@ class ReportServices {
       return report;
     } catch (error) {
       throw new Error(`Erro ao buscar denúncia: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 
@@ -56,8 +58,9 @@ class ReportServices {
 
       return reports;
     } catch (error) {
-      console.error("Erro ao criar denúncia:", error);
       throw new Error(`Falha na criação: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 
@@ -68,6 +71,8 @@ class ReportServices {
       return reports;
     } catch (error) {
       throw new Error(`Erro ao listar denúncias: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 
@@ -87,8 +92,9 @@ class ReportServices {
 
       return reportsOng;
     } catch (error) {
-      console.error("❌ Falha ao listar os reports:", error);
       throw new Error(`⚠️ Falha ao listar os reports: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 
@@ -107,6 +113,8 @@ class ReportServices {
       return reportStatus;
     } catch (error) {
       throw new Error(`Erro ao alterar status da denúncia: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 
@@ -127,6 +135,8 @@ class ReportServices {
       return { message: "Denúncia excluída com sucesso." };
     } catch (error) {
       throw new Error(`Erro ao excluir denúncia: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 }

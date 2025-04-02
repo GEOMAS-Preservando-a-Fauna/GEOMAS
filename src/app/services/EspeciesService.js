@@ -1,43 +1,53 @@
 import prisma from "../utils/prisma.js";
-import { especies } from "../utils/constData.js";
 
 class EspeciesServices {
-    async create(name) {
-        try {
-            await prisma.classeAnimal.createMany({
-                data: especies,
-                skipDuplicates: true,
-            });
+  async create(name) {
+    try {
+      await prisma.classeAnimal.createMany({
+        data: especies,
+        skipDuplicates: true,
+      });
 
-            const especie = await prisma.classeAnimal.create({
-                data: {
-                    name: name,
-                },
-            });
+      const especie = await prisma.classeAnimal.create({
+        data: {
+          name: name,
+        },
+      });
 
-            return especie;
-        } catch (error) {
-            console.error("❌ Erro ao criar uma especie:", error);
-            console.error("❌ Erro ao criar varias especies:", error);
-            throw new Error(`⚠️ Erro ao criar uma especie: ${error.message}`);
-        } finally {
-            await prisma.$disconnect();
-        }
+      return especie;
+    } catch (error) {
+      throw new Error(`⚠️ Erro ao criar uma especie: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
+  }
 
-    async list() {
-        try {
-            const especies = await prisma.classeAnimal.findMany();
-            return especies;
-        } catch (error) {
-            console.error("❌ Erro ao listar varias especies:", error);
-            throw new Error(
-                `⚠️ Erro ao listar varias especies:: ${error.message}`
-            );
-        } finally {
-            await prisma.$disconnect();
-        }
+  async list() {
+    try {
+      const especies = await prisma.classeAnimal.findMany();
+      return especies;
+    } catch (error) {
+      throw new Error(`⚠️ Erro ao listar varias especies:: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
+  }
+
+  async listByOng(id) {
+    try {
+      if (id) {
+        return await prisma.ongAnimal.findMany({
+          where: { especieId: id },
+          include: { ong: true },
+        });
+      }
+      return await prisma.classeAnimal.findMany();
+    } catch (error) {
+      throw new Error(`⚠️ Erro ao listar espécies: ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }
 
 export default new EspeciesServices();

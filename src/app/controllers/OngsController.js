@@ -46,7 +46,6 @@ class OngsController {
       const ongs = await OngsServices.list();
       return res.status(200).json(ongs);
     } catch (error) {
-      console.log("Erro ao listar ongs/ong", error.message);
       res.status(500).json({ error: error.message });
     }
   }
@@ -57,7 +56,6 @@ class OngsController {
       const deleted = await OngsServices.destroy(Number(id));
       res.status(204).json({ message: "Ong deletado com sucesso!" });
     } catch (error) {
-      console.log("Erro ao deletar user", error.message);
       res.status(400).json({ error: error.message });
     }
   }

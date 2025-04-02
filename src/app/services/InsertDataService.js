@@ -84,8 +84,9 @@ class InsertDataService {
 
       return { message: "Dados padrões criados com sucesso!" };
     } catch (error) {
-      console.error("❌ Erro ao inserir dados padrões:", error);
       throw new Error(`⚠️ Erro ao Criar Dados! ${error.message}`);
+    } finally {
+      await prisma.$disconnect();
     }
   }
 }
