@@ -10,54 +10,41 @@ import {
 class InsertDataService {
   async InsertDatas() {
     try {
-      // Verificando a existência dos dados antes de inserir
-      const [
-        classeExists,
-        estadoExists,
-        cidadeExists,
-        animalExists,
-        ongExists,
-      ] = await Promise.all([
-        prisma.classeAnimal.findFirst(),
-        prisma.estado.findFirst(),
-        prisma.cidade.findFirst(),
-        prisma.animal.findFirst(),
-        prisma.ongs.findFirst(),
-      ]);
-
-      // Iniciando a criação dos dados
-      const createData = [];
-      if (!classeExists) {
-        createData.push(
-          prisma.classeAnimal.createMany({
-            data: especies,
-            skipDuplicates: true,
-          })
-        );
-      }
-      if (!estadoExists) {
-        createData.push(
-          prisma.estado.createMany({ data: estados, skipDuplicates: true })
-        );
-      }
-      if (!cidadeExists) {
-        createData.push(
-          prisma.cidade.createMany({ data: cidades, skipDuplicates: true })
-        );
-      }
-      if (!animalExists) {
-        createData.push(
-          prisma.animal.createMany({ data: animals, skipDuplicates: true })
-        );
+      if (!(await prisma.classeAnimal.findFirst())) {
+        await prisma.classeAnimal.createMany({
+          data: especies,
+          skipDuplicates: true,
+        });
+        console.log("Classes de animais criadas com sucesso");
       }
 
-      // Criando os dados simultaneamente
-      if (createData.length > 0) {
-        await Promise.all(createData);
+      if (!(await prisma.estado.findFirst())) {
+        await prisma.estado.createMany({
+          data: estados,
+          skipDuplicates: true,
+        });
+        console.log("Estados criados com sucesso");
       }
 
-      // Inserindo as ONGs
-      if (!ongExists) {
+      if (!(await prisma.cidade.findFirst())) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        await prisma.cidade.createMany({
+          data: cidades,
+          skipDuplicates: true,
+        });
+        console.log("Cidades criadas com sucesso");
+      }
+
+      if (!(await prisma.animal.findFirst())) {
+        await prisma.animal.createMany({
+          data: animals,
+          skipDuplicates: true,
+        });
+        console.log("Animais criados com sucesso");
+      }
+
+      if (!(await prisma.ongs.findFirst())) {
         await Promise.all(
           ongsData.map((ong) =>
             prisma.ongs.create({
@@ -75,15 +62,16 @@ class InsertDataService {
             })
           )
         );
-
-        // Criando usuário convidado
+        console.log("ONGs criadas com sucesso");
         await prisma.user.create({
           data: { email: "convidado@gmail.com", password: "convidado" },
         });
+        console.log("Usuário convidado criado com sucesso");
       }
 
       return { message: "Dados padrões criados com sucesso!" };
     } catch (error) {
+      console.error("Erro detalhado:", error);
       throw new Error(`⚠️ Erro ao Criar Dados! ${error.message}`);
     } finally {
       await prisma.$disconnect();

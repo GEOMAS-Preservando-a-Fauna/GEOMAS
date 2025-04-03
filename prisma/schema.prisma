@@ -7,45 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Modelo de Usuário
 model User {
   id         Int      @id @default(autoincrement())
   email      String   @unique
   password   String
+  reports    Report[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  reports    Report[]
 }
 
+// Modelo de Espécie
 model ClasseAnimal {
   id         Int         @id @default(autoincrement())
   name       String      @unique @db.VarChar(100)
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
   animais    Animal[]
   ongs       OngAnimal[]
   reports    Report[]
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
 }
 
+// Modelo de Animal
 model Animal {
   id             Int          @id @default(autoincrement())
   name           String       @db.VarChar(100)
   scientificName String       @db.VarChar(100)
   especie_id     Int
-  created_at     DateTime     @default(now())
-  updated_at     DateTime     @updatedAt
   especie        ClasseAnimal @relation(fields: [especie_id], references: [id])
   reports        Report[]
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
 }
 
+// Tabela intermediária para o relacionamento N:N entre Ongs e Animais
 model OngAnimal {
   ongId     Int
   especieId Int
-  especie   ClasseAnimal @relation(fields: [especieId], references: [id], onDelete: Cascade)
   ong       Ongs         @relation(fields: [ongId], references: [id], onDelete: Cascade)
+  especie   ClasseAnimal @relation(fields: [especieId], references: [id], onDelete: Cascade)
 
-  @@id([ongId, especieId])
+  @@id([ongId, especieId]) // Chave primária composta
 }
 
+// Modelo de ONG
 model Ongs {
   id           Int         @id @default(autoincrement())
   name         String      @db.VarChar(100)
@@ -56,11 +61,11 @@ model Ongs {
   number       String
   numberSecond String?
   cidadeId     Int
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
+  cidade       Cidade      @relation(fields: [cidadeId], references: [id])
   especies     OngAnimal[]
   reports      OngReport[]
-  cidade       Cidade      @relation(fields: [cidadeId], references: [id])
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
 }
 
 model OngReport {
@@ -72,6 +77,7 @@ model OngReport {
   @@id([ongId, reportId])
 }
 
+// Modelo de Denúncia (Report)
 model Report {
   id         Int           @id @default(autoincrement())
   status     Boolean       @default(false)
@@ -80,31 +86,34 @@ model Report {
   endereco   String
   reportType String
   especie_id Int?
+  especie    ClasseAnimal? @relation(fields: [especie_id], references: [id])
   animal_id  Int?
+  animal     Animal?       @relation(fields: [animal_id], references: [id])
+  ongs       OngReport[]
   user_id    Int
+  user       User          @relation(fields: [user_id], references: [id])
   created_at DateTime      @default(now())
   updated_at DateTime      @updatedAt
-  ongs       OngReport[]
-  animal     Animal?       @relation(fields: [animal_id], references: [id])
-  especie    ClasseAnimal? @relation(fields: [especie_id], references: [id])
-  user       User          @relation(fields: [user_id], references: [id])
 }
 
+// Modelo de Cidade
 model Cidade {
   id         Int      @id @default(autoincrement())
   name       String   @db.VarChar(100)
   estado_id  Int
+  estado     Estado   @relation(fields: [estado_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  estado     Estado   @relation(fields: [estado_id], references: [id])
   Ongs       Ongs[]
 }
+
+// Modelo de Estado
 
 model Estado {
   id         Int      @id @default(autoincrement())
   name       String
   sigla      String   @unique @db.VarChar(2)
+  cidades    Cidade[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  cidades    Cidade[]
 }
