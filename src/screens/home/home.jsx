@@ -39,8 +39,8 @@ export default function Home() {
 
   return (
     <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
-      <Header />
       <View style={styles.container}>
+        <Header />
         <TouchableOpacity onPress={() => navigation.navigate("denunciar")}>
           <Foundation name="alert" size={110} color="red" />
         </TouchableOpacity>

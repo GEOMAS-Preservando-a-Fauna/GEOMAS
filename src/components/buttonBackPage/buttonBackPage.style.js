@@ -3,7 +3,7 @@ import { LETRAS, CORES } from "../../constants/tema";
 const styles = {
   btnBack: {
     position: "absolute",
-    top: 10,
+    top: 35,
     left: 10,
     display: "flex",
     flexDirection: "row",

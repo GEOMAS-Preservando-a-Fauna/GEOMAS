@@ -2,7 +2,7 @@ import { LETRAS, CORES } from "../../constants/tema";
 
 const styles = {
   container: {
-    paddingHorizontal: 5,
+    paddingTop: 30,
     alignItems: "center",
     justifyContent: "space-around",
     gap: "15%",

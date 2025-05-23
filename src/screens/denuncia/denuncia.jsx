@@ -135,7 +135,7 @@ export default function Denuncia() {
   return (
     <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
       <ScrollView>
-        <ButtonBackPage Page="home" text="denúncias" />
+        <ButtonBackPage Page="home" text="denúncias"  />
         <View style={styles.container}>
           <Mapa
             setLocalizacao={setLocal}
@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: "15%",
     alignItems: "center",
+    paddingTop: 35,
   },
   box: {
     marginVertical: 10,

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState, useCallback } from "react";
 import TelaContainer from "../../components/telaContainer/telaContainer";
 import styles from "./homeOng.style.js";
-import Header from "../../components/header/header";
+import Header from "../../components/header/header.jsx";
 import { useNavigation } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import API from "../../service/apiAxios.js";
@@ -60,8 +60,8 @@ export default function HomeOng() {
 
   return (
     <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
-      <Header />
       <View style={styles.container}>
+        <Header />
         <Mapa reports={reports} />
         <Text style={styles.titulo}>Denúncias</Text>
         <View style={styles.line} />
