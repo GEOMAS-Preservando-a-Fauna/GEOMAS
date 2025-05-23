@@ -6,6 +6,7 @@ import styles from "../cadastrar.style";
 import TelaContainer from "../../../components/telaContainer/telaContainer";
 import BtnIntro from "../../../components/btnIntro/btnIntro";
 import Icones from "../../../constants/icones";
+import Carregamento from "../../../components/carregamento/carregamento";
 
 import { CreateUser } from "../../../service/login/registro";
 
@@ -13,7 +14,7 @@ export default function CadastrarUsers() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const [carregando, setCarregando] = useState(false);
   const navigation = useNavigation();
 
   const createUserHandler = async () => {
@@ -23,14 +24,17 @@ export default function CadastrarUsers() {
     }
 
     try {
+      setCarregando(true);
       const userData = { email, password };
       const response = await CreateUser({ userData, navegarTo: navigation });
-
+      console.log("Usuário criado:", response.data);
+      setCarregando(false);
       return Alert.alert("Sucesso", "Sua conta foi criada com sucesso!", [
         { text: "OK" },
       ]);
     } catch (error) {
-      console.error("Não foi possível criar o usuário:", error);
+      setCarregando(false);
+      console.log("Não foi possível criar o usuário:", error);
       Alert.alert("Erro", "Não foi possível criar o usuário.");
     }
   };
@@ -74,6 +78,7 @@ export default function CadastrarUsers() {
             backgroundColor="#256c42"
             onPress={createUserHandler}
           />
+          <Carregamento visivel={carregando} />
         </View>
       </ScrollView>
     </TelaContainer>

@@ -2,7 +2,6 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API = axios.create({
-  //endereço da api
   baseURL: "https://geomas.onrender.com",
 });
 
@@ -15,7 +14,7 @@ API.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error("Erro ao recuperar token:", error);
+      console.log("Erro ao recuperar token:", error);
     }
 
     return config;

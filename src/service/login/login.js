@@ -29,7 +29,7 @@ export const getLogin = async ({ data, navigateTo }) => {
 
     throw new Error("Erro inesperado ao tentar realizar login.");
   } catch (error) {
-    console.error("Erro ao logar ONG/USER:", error);
+    console.log("Erro ao logar ONG/USER:", error);
     return { success: false, error: error.message || "Erro ao fazer login" };
   }
 };

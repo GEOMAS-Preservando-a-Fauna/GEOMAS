@@ -27,7 +27,7 @@ export default function Introduction() {
             backgroundColor="#adcea4"
             page="login"
           />
-          <BtnIntro texto="convidado" backgroundColor="#256c42" page="" />
+          {/* <BtnIntro texto="convidado" backgroundColor="#256c42" page="" /> */}
         </View>
       </View>
     </TelaContainer>

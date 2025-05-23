@@ -10,6 +10,7 @@ import { getUserData, getUserType } from "../../service/getStorage.js";
 import { useNavigation } from "@react-navigation/native";
 import Mapa from "../../components/map/map.jsx";
 import CheckboxOngs from "../../components/selectOngs/selectedOngs.jsx";
+import Carregamento from "../../components/carregamento/carregamento.jsx";
 
 export default function Denuncia() {
   const [especies, setEspecies] = useState([]);
@@ -22,6 +23,7 @@ export default function Denuncia() {
   const [selectedAnimal, setSelectedAnimal] = useState();
   const [selectedOng, setSelectedOng] = useState([]);
   const [user, setUser] = useState();
+  const [carregando, setCarregando] = useState(false);
 
   const navigation = useNavigation();
 
@@ -35,7 +37,7 @@ export default function Denuncia() {
         setUser(response.data);
       }
     } catch (error) {
-      console.error("Erro ao obter dados do usuário:", error);
+      console.log("Erro ao obter dados do usuário:", error);
     }
   };
 
@@ -44,7 +46,7 @@ export default function Denuncia() {
       const response = await API.get("/especies");
       setEspecies(response.data);
     } catch (error) {
-      console.error("Erro ao listar Espécies:", error);
+      console.log("Erro ao listar Espécies:", error);
     }
   };
 
@@ -55,17 +57,16 @@ export default function Denuncia() {
       const response = await API.get(`/animais/especie/${especieId}`);
       setAnimais(response.data);
     } catch (error) {
-      console.error("Erro ao listar Animais:", error);
+      console.log("Erro ao listar Animais:", error);
     }
   };
 
   const getOngsByEspecies = async (especieId) => {
     try {
       const response = await API.get(`/especies/ongs/${especieId}`);
-      console.log("ONGs encontradas:", response.data);
       setOngs(response.data);
     } catch (error) {
-      console.error("Erro ao listar ONGs:", error);
+      console.log("Erro ao listar ONGs:", error);
     }
   };
 
@@ -86,7 +87,7 @@ export default function Denuncia() {
       if (!selectedAnimal) {
         throw new Error("Selecionar um animal é obrigatório!");
       }
-
+      setCarregando(true);
       const response = await API.post("/reports", {
         latitude: local.latitude,
         longitude: local.longitude,
@@ -98,11 +99,13 @@ export default function Denuncia() {
         user_id: user.id,
       });
 
+      setCarregando(false);
       Alert.alert("Sucesso", "Denúncia enviada com sucesso!", [{ text: "OK" }]);
 
       navigation.navigate("home");
     } catch (error) {
-      console.error("Erro ao enviar denúncia:", error);
+      setCarregando(false);
+      console.log("Erro ao enviar denúncia:", error);
       Alert.alert("Erro", error.message || "Erro ao enviar denúncia!");
     }
   };
@@ -171,6 +174,8 @@ export default function Denuncia() {
             backgroundColor="#006400"
             onPress={setDenuncia}
           />
+
+          <Carregamento visivel={carregando} />
         </View>
       </ScrollView>
     </TelaContainer>

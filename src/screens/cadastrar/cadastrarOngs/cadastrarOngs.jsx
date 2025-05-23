@@ -10,6 +10,7 @@ import API from "../../../service/apiAxios";
 import SelectItem from "../../../components/selectItem/select";
 import { CreateOng } from "../../../service/login/registro";
 import EspeciesCheckbox from "../../../components/selectEspecie/selectEspecie";
+import Carregamento from "../../../components/carregamento/carregamento";
 
 export default function CadastrarOngs() {
   const [name, setName] = useState("");
@@ -24,6 +25,7 @@ export default function CadastrarOngs() {
   const [selectedEspecies, setSelectedEspecies] = useState([]);
   const [selectedEstado, setSelectedEstado] = useState({});
   const [selectedCidade, setSelectedCidade] = useState({});
+  const [carregando, setCarregando] = useState(false);
   const navigation = useNavigation();
 
   const getEspecies = async () => {
@@ -31,7 +33,7 @@ export default function CadastrarOngs() {
       const response = await API.get("/especies");
       setEspecies(response.data);
     } catch (error) {
-      console.error("Erro ao listar Espécies:", error);
+      console.log("Erro ao listar Espécies:", error);
     }
   };
 
@@ -40,7 +42,7 @@ export default function CadastrarOngs() {
       const response = await API.get("/estados");
       setEstados(response.data);
     } catch (error) {
-      console.error("Erro ao listar Estados:", error);
+      console.log("Erro ao listar Estados:", error);
     }
   };
 
@@ -51,7 +53,7 @@ export default function CadastrarOngs() {
       const response = await API.get(`/cidade/estado/${estadoId}`);
       setCidades(response.data);
     } catch (error) {
-      console.error("Erro ao listar Cidades:", error);
+      console.log("Erro ao listar Cidades:", error);
     }
   };
 
@@ -70,6 +72,7 @@ export default function CadastrarOngs() {
     }
 
     try {
+      setCarregando(true);
       const response = await CreateOng({
         data: {
           name,
@@ -81,12 +84,13 @@ export default function CadastrarOngs() {
           navegarTo: navigation,
         },
       });
-
+      setCarregando(false);
       return Alert.alert("Sucesso", "Sua conta criada com sucesso!", [
         { text: "OK" },
       ]);
     } catch (error) {
-      console.error("Não foi possível criar a ong:", error);
+      setCarregando(false);
+      console.log("Não foi possível criar a ong:", error);
     }
   };
 
@@ -169,6 +173,7 @@ export default function CadastrarOngs() {
             backgroundColor="#256c42"
             onPress={createOng}
           />
+          <Carregamento visivel={carregando} />
         </View>
       </ScrollView>
     </TelaContainer>

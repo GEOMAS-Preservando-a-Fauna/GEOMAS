@@ -6,10 +6,12 @@ import Icones from "../../constants/icones";
 import BtnIntro from "../../components/btnIntro/btnIntro";
 import { useNavigation } from "@react-navigation/native";
 import getLogin from "../../service/login/login";
+import Carregamento from "../../components/carregamento/carregamento";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [carregando, setCarregando] = useState(false);
   const navigation = useNavigation();
 
   const login = async () => {
@@ -18,16 +20,20 @@ export default function Login() {
     }
 
     try {
+      setCarregando(true);
       const response = await getLogin({
         data: { email, password },
         navigateTo: navigation,
       });
 
+      setCarregando(false);
+
       if (!response.success) {
         Alert.alert("Erro", response.error || "Não foi possível fazer login.");
       }
     } catch (error) {
-      console.error("Erro ao logar usuário:", error);
+      setCarregando(false);
+      console.log("Erro ao logar usuário:", error);
       Alert.alert("Erro", "Não foi possível fazer login.");
     }
   };
@@ -56,6 +62,7 @@ export default function Login() {
           />
         </View>
         <BtnIntro texto="ENTRAR" backgroundColor="#256c42" onPress={login} />
+        <Carregamento visivel={carregando} />
       </View>
     </TelaContainer>
   );

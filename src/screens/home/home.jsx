@@ -27,7 +27,7 @@ export default function Home() {
       const response = await API.get("/ongs");
       setOngs(response.data);
     } catch (error) {
-      console.error("Erro ao listar ONGs:", error);
+      console.log("Erro ao listar ONGs:", error);
     } finally {
       setRefreshing(false);
     }
@@ -42,15 +42,16 @@ export default function Home() {
       <Header />
       <View style={styles.container}>
         <TouchableOpacity onPress={() => navigation.navigate("denunciar")}>
-          <Foundation name="alert" size={130} color="red" />
+          <Foundation name="alert" size={110} color="red" />
         </TouchableOpacity>
         <BtnIntro
           texto="Fazer Denúncia"
           backgroundColor="#256c42"
           page="denunciar"
         />
-        <View style={styles.line} />
         <Text style={styles.titulo}>LISTA DE ONGS</Text>
+
+        <View style={styles.line} />
 
         <ScrollView
           contentContainerStyle={{ alignItems: "center" }}
@@ -59,12 +60,15 @@ export default function Home() {
           }
         >
           {ongs.map((item) => (
-            <View key={item.id} style={[styles.card, { alignItems: "center" }]}>
-              <Text style={styles.name}>{item.name.toUpperCase()}</Text>
-              <TouchableOpacity onPress={() => copiarText()}>
-                <Text style={styles.contato}>{item.number}</Text>
-              </TouchableOpacity>
-              <Text style={styles.text}>{item.description}</Text>
+            <View key={item.id} style={styles.card}>
+              <View style={styles.cardBarra} />
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={styles.name}>{item.name.toUpperCase()}</Text>
+                <TouchableOpacity onPress={() => copiarText()}>
+                  <Text style={styles.contato}>{item.number}</Text>
+                </TouchableOpacity>
+                <Text style={styles.text}>{item.description}</Text>
+              </View>
             </View>
           ))}
         </ScrollView>
