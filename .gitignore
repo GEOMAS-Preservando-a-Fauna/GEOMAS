@@ -15,5 +15,7 @@
 # Ignorar a pasta .expo (usada pelo Expo no React Native)
 /FRONTEND/.expo
 
+node_modules
+
 # Ignorar arquivos do VS Code em geral
 .vscode
