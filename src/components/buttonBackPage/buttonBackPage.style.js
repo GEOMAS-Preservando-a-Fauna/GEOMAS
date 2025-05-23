@@ -13,7 +13,7 @@ const styles = {
     zIndex: 999,
   },
   text: {
-    fontSize: LETRAS.xxlg,
+    fontSize: LETRAS.xxl,
     fontWeight: "800",
     color: CORES.verdeClaro,
     textAlign: "center",
