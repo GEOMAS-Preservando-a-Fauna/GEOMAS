@@ -1,0 +1,128 @@
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import TelaContainer from "../../components/telaContainer/telaContainer";
+import styles from "./homeOng.style.js";
+import Header from "../../components/header/header.jsx";
+import { useNavigation } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import API from "../../service/apiAxios.js";
+import Mapa from "../../components/map/map.jsx";
+import { getUserType, getUserData } from "../../service/getStorage.js";
+
+export default function HomeOng() {
+  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+  const [ong, setOng] = useState(null);
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    const fetchOng = async () => {
+      try {
+        const userType = await getUserType();
+        const userData = await getUserData();
+        if (userType === "ong") {
+          const response = await API.get(`/ongs/email/${userData.email}`);
+          setOng(response.data);
+        }
+      } catch (error) {
+        console.log("Erro ao obter dados da ONG:", error);
+      }
+    };
+
+    fetchOng();
+  }, []);
+
+  useEffect(() => {
+    if (ong) {
+      getReports();
+    }
+  }, [ong]);
+
+  // Função para buscar reports
+  const getReports = useCallback(async () => {
+    if (!ong) return;
+    setRefreshing(true);
+    try {
+      const response = await API.get(`/reports/ongs/${ong.id}`);
+      setReports(response.data);
+    } catch (error) {
+      console.log("Erro ao buscar reports");
+    } finally {
+      setRefreshing(false);
+    }
+  }, [ong]);
+
+  return (
+    <TelaContainer barStyle="dark-content" backgroundColor={"#FFFFFF"}>
+      <View style={styles.container}>
+        <Header />
+        <Mapa reports={reports} />
+        <Text style={styles.titulo}>Denúncias</Text>
+        <View style={styles.line} />
+
+        <ScrollView
+          contentContainerStyle={{ alignItems: "center" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={getReports} />
+          }
+        >
+          {reports.length > 0 ? (
+            reports.map((report, i) => (
+              <View
+                key={report.id}
+                style={[styles.card, { alignItems: "center" }]}
+              >
+                <View style={styles.box}>
+                  <Text style={styles.name}>#{i + 1} Denúncia </Text>
+                  <Text style={styles.t}>
+                    {new Date(report.created_at).toLocaleDateString()}
+                  </Text>
+                </View>
+                <Text style={styles.textC}>
+                  <Text style={styles.text2}>Tipo de Risco: {""}</Text>
+                  {report.reportType}
+                </Text>
+                <Text style={styles.textC}>
+                  <Text style={styles.text2}>Endereço: {""}</Text>
+                  {report.endereco}
+                </Text>
+                <Text style={styles.pendente}>
+                  {report.status === false ? "Pendente" : "Atendida"}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text
+              style={{
+                fontSize: 15,
+                marginBottom: 10,
+                fontWeight: "700",
+                color: "#8FBC8F",
+              }}
+            >
+              Nenhuma denúncia encontrada!
+            </Text>
+          )}
+        </ScrollView>
+
+        <TouchableOpacity
+          style={{
+            zIndex: 100,
+            position: "absolute",
+            bottom: 25,
+            right: 10,
+          }}
+          onPress={() => navigation.navigate("notification")}
+        >
+          <Ionicons name="notifications" size={50} color="#C40C0C" />
+        </TouchableOpacity>
+      </View>
+    </TelaContainer>
+  );
+}
